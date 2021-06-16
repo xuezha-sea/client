@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:ed25519_hd_key/ed25519_hd_key.dart';
@@ -43,5 +44,10 @@ class AccountCubit extends Cubit<AccountState> {
     await repository.save(account);
 
     this.emit(AccountLoaded(account: account));
+  }
+
+  Future<bool> unlock() async {
+    var localAuth = LocalAuthentication();
+    return await localAuth.authenticate(localizedReason: '为了安全起见，只能本人解锁哦');
   }
 }

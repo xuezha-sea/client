@@ -42,24 +42,34 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _accountLoaded(Account account) {
-    Future.delayed(
-        Duration(seconds: 1),
-        () => AppRoute.navigatorKey.currentState!
-            .pushNamedAndRemoveUntil(AppRoute.main, (_) => false));
-
-    return Wrap(
-      runSpacing: 16,
+  Widget _accountLoaded(
+      BuildContext context, AccountCubit cubit, Account account) {
+    return Flex(
+      direction: Axis.vertical,
       children: [
-        ExtendedImage.network(
-          account.avatar,
-          cache: true,
-          borderRadius: BorderRadius.all(Radius.circular(96)),
-        )
-            .parent(({required child}) => Hero(tag: "avatar", child: child))
-            .constrained(width: 96, height: 96)
-            .center(),
-        Text("欢迎回家").center()
+        Wrap(
+          runSpacing: 32,
+          children: [
+            ExtendedImage.network(
+              account.avatar,
+              cache: true,
+              borderRadius: BorderRadius.all(Radius.circular(96)),
+            )
+                .parent(({required child}) => Hero(tag: "avatar", child: child))
+                .constrained(width: 96, height: 96)
+                .center(),
+            Text("欢迎回来").center()
+          ],
+        ).center().expanded(),
+        IconButton(
+          icon: Icon(Icons.fingerprint),
+          iconSize: 64,
+          onPressed: () => cubit.unlock().then((value) {
+            if (value)
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil(AppRoute.main, (route) => false);
+          }),
+        ).center().padding(bottom: 128)
       ],
     );
   }
@@ -71,7 +81,7 @@ class HomePage extends StatelessWidget {
         if (state is HasNotAccount) {
           return _hasNotAccount(context);
         } else if (state is AccountLoaded) {
-          return _accountLoaded(state.account);
+          return _accountLoaded(context, context.read(), state.account);
         } else {
           return _accountLoading();
         }
