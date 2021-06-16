@@ -5,9 +5,14 @@ import 'package:styled_widget/styled_widget.dart';
 import '../../theme.dart';
 
 class ChatItem extends StatelessWidget {
+  final String name;
+
+  final String content;
+
   final VoidCallback onPressed;
 
-  ChatItem({required this.onPressed});
+  ChatItem(
+      {required this.name, required this.content, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,11 @@ class ChatItem extends StatelessWidget {
             Flex(
               direction: Axis.horizontal,
               children: [
-                Text("address or nickname")
+                Text(
+                  "${this.name}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                )
                     .fontSize(titleSize)
                     .alignment(Alignment.centerLeft)
                     .expanded(),
@@ -31,7 +40,7 @@ class ChatItem extends StatelessWidget {
                     .textColor(secondaryTextColor)
               ],
             ).padding(right: 16),
-            Text("last content")
+            Text("${this.content}")
                 .fontSize(contentSize)
                 .textColor(secondaryTextColor)
                 .alignment(Alignment.centerLeft)
